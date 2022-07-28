@@ -107,7 +107,5 @@ near validators next
 ---
 
 
-## We continue ?
-
-[Setup and Run your Node](./challenge.md)
+## [Setup and Run your Node](./challenge.md)
 
