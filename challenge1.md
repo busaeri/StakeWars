@@ -46,7 +46,7 @@ sudo apt install nodejs
 PATH="$PATH"
 ```
 
-![img](./images/Install Developer Tools, Nodejs dan NPM.PNG)
+![img](./images/Install_Developer_Tools_Nodejs_dan_NPM.PNG)
 
 ## Cek version `Nodejs` dan `NPM`
 
@@ -80,62 +80,60 @@ export NEAR_ENV=shardnet
 echo 'export NEAR_ENV=shardnet' >> ~/.rc
 ```
 
-![img](./images/Install NEAR-CLI.PNG)
+![img](./images/Install_NEAR_CLI.PNG)
 
 ## Useful Command
 
 - Cek List Proposals
 
-  Pada bagian ini kalian bisa melihat list proposal apakah diterima atau ditolak (kalian bisa cek nanti setelah membuat validator).
+Pada bagian ini kalian bisa melihat list proposal apakah diterima atau ditolak (kalian bisa cek nanti setelah membuat validator).
 
-  - Cek semua proposals
+- Cek semua proposals
 
-    ```
-    near proposals
-    ```
+```
+near proposals
+```
 
-  - Cek spesific proposals
+- Cek spesific proposals
 
-    Ganti `nama` dengan nama wallet kalian (contoh : stakewar)
+Ganti `nama` dengan nama wallet kalian (contoh : stakewar)
 
-    ```
-    near proposals | grep nama.factory.shardnet.near
-    ```
+```
+near proposals | grep nama.factory.shardnet.near
+```
 
 - Cek Validators Aktif
 
-  Pada bagian ini kalian bisa melihat list validators yang sedang aktif (Kalian bisa cek ini saat validator kalian sudah status aktif).
+- Cek semua validators aktif
 
-  - Cek semua validators aktif
+```
+near validators current
+```
 
-    ```
-    near validators current
-    ```
+- Cek spesific validators aktif
 
-  - Cek spesific validators aktif
+Ganti `nama` dengan nama wallet kalian (contoh : stakewar)
 
-    Ganti `nama` dengan nama wallet kalian (contoh : stakewar)
-
-    ```
-    near validators current | grep nama.factory.shardnet.near
-    ```
+```
+near validators current | grep nama.factory.shardnet.near
+```
 
 - Cek Validators Next
 
-  Pada bagian ini kalian bisa melihat validators yang telah diterima proposalnya dan akan menjadi aktif pada epoch selanjutnya (Jika proposal sudah diterima, maka akan muncul dibagian ini nanti setelah epoch sebelumnya selesai).
+- Cek semua validators next
 
-  - Cek semua validators next
+```
+near validators next
+```
 
-    ```
-    near validators next
-    ```
+- Cek spesific validators next
 
-  - Cek spesific validators next
+Ganti `nama` dengan nama wallet kalian (contoh : stakewar)
 
-    Ganti `nama` dengan nama wallet kalian (contoh : stakewar)
+```
+near validators next | grep nama.factory.shardnet.near
+```
 
-    ```
-    near validators next | grep nama.factory.shardnet.near
-    ```
+## Nex challenge 2
 
-## [Setup and Run your Node | challenge 2](./challenge.md)
+[Setup and Run your Node | challenge 2](./challenge.md)
