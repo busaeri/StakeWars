@@ -17,11 +17,9 @@ join the official Discord:
 >- https://discord.gg/XVsBbZGqUt
 
 ### Minimum Hardware Requirements
- - 4x CPUs; the faster clock speed the better
- - 8GB RAM
+ - 4-Core CPU with AVX support
+ - 8GB RAM DDR4
  - 500GB Disk
- - Permanent Internet connection (traffic will be minimal during testnet; 10Mbps will be plenty - for production at least 100Mbps is expected)
-
 
 ### Create Wallet
 https://wallet.shardnet.near.org/
