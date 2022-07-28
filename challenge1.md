@@ -136,4 +136,4 @@ near validators next | grep nama.factory.shardnet.near
 
 ## Nex challenge 2
 
-[Setup and Run your Node | challenge 2](./challenge.md)
+[Setup and Run your Node | challenge 2](./challenge2.md)

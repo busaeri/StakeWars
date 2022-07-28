@@ -1,77 +1,87 @@
-# Stake Wars: Episode III. Challenge 2
-
-Tantangan ini difokuskan pada penerapan node (nearcore), mengunduh snapshot, menyinkronkannya ke keadaan jaringan yang sebenarnya, kemudian mengaktifkan node sebagai validator.
+## Setup Wallet dan Run Validator `(Challenge 002)`
 
 ## Useful links
 
 Wallet:
->- [Wallet](https://wallet.shardnet.near.org/)
+
+> - [Wallet](https://wallet.shardnet.near.org/)
 
 Explorer:
->- [Explorer](https://explorer.shardnet.near.org/)
+
+> - [Explorer](https://explorer.shardnet.near.org/)
 
 Official documentation:
->- [Validator setup instructions](https://github.com/near/stakewars-iii)
 
-join the official Discord:
->- https://discord.gg/XVsBbZGqUt
+> - [Validator setup instructions](https://github.com/near/stakewars-iii)
 
-## Minimum Hardware Requirements
- - 4-Core CPU with AVX support
- - 8GB RAM DDR4
- - 500GB Disk
-#### Install required software & set the configuration
+gabung official Discord:
 
-##### Prerequisites:
-Before you start, you may want to confirm that your machine has the right CPU features. 
+> - https://discord.gg/XVsBbZGqUt
+
+## Cek Spesifikasi (Supported/Not Supported)
 
 ```
 lscpu | grep -P '(?=.*avx )(?=.*sse4.2 )(?=.*cx16 )(?=.*popcnt )' > /dev/null \
-  && echo "Supported" \
-  || echo "Not supported"
+&& echo "Supported" \
+|| echo "Not supported"
 ```
-> Supported
 
+![img](./images/CekSpesifikasi.png)
 
-##### Install developer tools:
+Jika sudah muncul `Supported`, Lanjut ke nex step).
+
+## Install Developer Tools
+
 ```
 sudo apt install -y git binutils-dev libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev cmake gcc g++ python docker.io protobuf-compiler libssl-dev pkg-config clang llvm cargo
 ```
-#####  Install Python pip:
+
+![img](./images/InstallDeveloperTools.PNG)
+
+## Install Python pip
 
 ```
 sudo apt install python3-pip
 ```
-##### Set the configuration:
+
+![img](./images/InstallPythonpip.PNG)
+
+## Set Configuration
 
 ```
 USER_BASE_BIN=$(python3 -m site --user-base)/bin
 export PATH="$USER_BASE_BIN:$PATH"
 ```
 
-##### Install Building env
+![img](./images/SetConfiguration.PNG)
+
+## Install Building Environment
+
 ```
 sudo apt install clang build-essential make
 ```
 
-##### Install Rust & Cargo
+![img](./images/InstallBuildingEnvironment.PNG)
+
+## Install Rust dan Cargo
+
 ```
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-You will see the following:
+![img](./images/InstallRustdanCargo.PNG)
+Press y dan enter
+Pilih 1 dan enter
 
-![img](./images/rust.png)
+## Source the Environment
 
-Press 1 and press enter.
-
-##### Source the environment
 ```
 source $HOME/.cargo/env
 ```
 
-#### Clone `nearcore` project from GitHub
-First, clone the [`nearcore` repository](https://github.com/near/nearcore).
+![img](./images/SourcetheEnvironment.PNG)
+
+## Clone `nearcore` Project, Clone Repository
 
 ```
 git clone https://github.com/near/nearcore
@@ -79,231 +89,237 @@ cd nearcore
 git fetch
 ```
 
-Checkout to the commit needed. Please refer to the commit defined in [this file](https://github.com/near/stakewars-iii/blob/main/commit.md). 
+## Checkout Commit
+
 ```
-git checkout <commit>
+git checkout 0d7f272afabc00f4a076b1c89a70ffc62466efe9
 ```
 
-#### Compile `nearcore` binary
-In the `nearcore` folder run the following commands:
+![img](./images/CheckoutCommit.PNG)
+
+## Compile `nearcore` Binary
 
 ```
 cargo build -p neard --release --features shardnet
 ```
-The binary path is `target/release/neard`. If you are seeing issues, it is possible that cargo command is not found. Compiling `nearcore` binary may take a little while.
 
-#### Initialize working directory
+![img](./images/CompilenearcoreBinary.PNG)
+Proses ini membutuhkan waktu yang cukup lama, jadi kalian perlu bersabar.
 
-In order to work properly, the NEAR node requires a working directory and a couple of configuration files. Generate the initial required working directory by running:
+## Inisialisasi Working Directory
+
+Lakukan ini agar NEAR Node kalian bekerja dengan lancar.
+
+- Delete old `genesis.json`
+
+```
+rm ~/.near/genesis.json
+```
+
+- Download new `genesis.json`
 
 ```
 ./target/release/neard --home ~/.near init --chain-id shardnet --download-genesis
 ```
 
-![img](./images/initialize.png)
+![img](./images/InisialisasiWorkingDirectory.PNG)
 
-This command will create the directory structure and will generate `config.json`, `node_key.json`, and `genesis.json` on the network you have passed. 
+- Menggunakan Snapshot `(Optional)`
 
-- `config.json` - Configuration parameters which are responsive for how the node will work. The config.json contains needed information for a node to run on the network, how to communicate with peers, and how to reach consensus. Although some options are configurable. In general validators have opted to use the default config.json provided.
+Install `AWS-CLI`
 
-- `genesis.json` - A file with all the data the network started with at genesis. This contains initial accounts, contracts, access keys, and other records which represents the initial state of the blockchain. The genesis.json file is a snapshot of the network state at a point in time. In contacts accounts, balances, active validators, and other information about the network. 
-
-- `node_key.json` -  A file which contains a public and private key for the node. Also includes an optional `account_id` parameter which is required to run a validator node (not covered in this doc).
-
-- `data/` -  A folder in which a NEAR node will write it's state.
-
-#### Replace the `config.json`
-
-From the generated `config.json`, there two parameters to modify:
-- `boot_nodes`: If you had not specify the boot nodes to use during init in Step 3, the generated `config.json` shows an empty array, so we will need to replace it with a full one specifying the boot nodes.
-- `tracked_shards`: In the generated `config.json`, this field is an empty. You will have to replace it to `"tracked_shards": [0]`
-
-```
-rm ~/.near/config.json
-wget -O ~/.near/config.json https://s3-us-west-1.amazonaws.com/build.nearprotocol.com/nearcore-deploy/shardnet/config.json
-```
-
-#### Get latest snapshot
-
-**IMPORTANT: NOT REQUIRED TO GET SNAPSHOT AFTER HARDFORK ON SHARDNET DURING 2022-07-18**
-
-Install AWS Cli
 ```
 sudo apt-get install awscli -y
 ```
 
-Download snapshot (genesis.json)
+Download Snapshot
+
 ```
-// IMPORTANT: NOT REQUIRED TO GET SNAPSHOT AFTER HARDFORK ON SHARDNET DURING 2022-07-18
 cd ~/.near
-wget https://s3-us-west-1.amazonaws.com/build.nearprotocol.com/nearcore-deploy/shardnet/genesis.json
+# download
+aws s3 --no-sign-request cp s3://build.openshards.io/stakewars/shardnet/data.tar.gz .
+# tar
+tar -xzvf data.tar.gz
+# Hapus data
+rm -rf data.tar.gz
 ```
 
-If the above fails, AWS CLI may be oudated in your distribution repository. Instead, try:
+## Replace `config.json`
+
 ```
-pip3 install awscli --upgrade
+rm ~/.near/config.json
+wget -O ~/.near/config.json https://s3-us-west-1.amazonaws.com/build.nearprotocol.com/nearcore-deploy/shardnet/config.json
+
 ```
 
-#### Run the node
-To start your node simply run the following command:
+![img](./images/Replaceconfig.json.PNG)
+
+## Jalankan Node
+
+Pada bagian ini kalian harus menunggu download headers ke 100% dan kemudian baru melakukan sinkronisasi block. \_Jangan sampai close tab sebelum itu selesai, jika download sudah selesai 100% silahkan hentikan log dengan menekan `CTRL + C`.
 
 ```
 cd ~/nearcore
 ./target/release/neard --home ~/.near run
 ```
 
-![img](./images/download.png)
-The node is now running you can see log outputs in your console. Your node should be find peers, download headers to 100%, and then download blocks.
+![img](./images/JalankanNode.PNG)
 
-----
+## Membuat Service
 
+```
+sudo tee /etc/systemd/system/neard.service > /dev/null <<EOF
+[Unit]
+Description=NEARd Daemon Service
+[Service]
+Type=simple
+User=$USER
+#Group=near
+WorkingDirectory=$HOME/.near
+ExecStart=$HOME/nearcore/target/release/neard run
+Restart=on-failure
+RestartSec=30
+KillSignal=SIGINT
+TimeoutStopSec=45
+KillMode=mixed
+[Install]
+WantedBy=multi-user.target
+EOF
+```
 
+## Aktifkan Service
 
-### Activating the node as validator
-##### Authorize Wallet Locally
-A full access key needs to be installed locally to be able to sign transactions via NEAR-CLI.
+```
+sudo systemctl daemon-reload
+sudo systemctl enable neard
+sudo systemctl start neard
+```
 
+Jika kamu mengalami masalah pada `neard.service` kalian bisa lakukan perintah berikut :
 
-* You need to run this command:
+```
+sudo systemctl stop neard
+sudo systemctl daemon-reload
+sudo systemctl start neard
+```
+
+## Cek Log
+
+```
+journalctl -n 100 -f -u neard
+```
+
+kalian bisa install `ccze` dengan command dibawah ini agar log kalian enak diliat.
+
+```
+sudo apt install ccze
+```
+
+command dibawah ini untuk melihat log kalian lebih enak dilihat.
+
+```
+journalctl -n 100 -f -u neard | ccze -A
+```
+
+## Menghubungkan Wallet ke NEAR-CLI dan Generate Validator Key
+
+Pada bagian ini kalian harus memasukkan shardnet wallet kalian untuk menjalankan validatornya, kalian bisa ikuti caranya dibawah ini.
+
+## Lakukan autorisasi wallet
 
 ```
 near login
 ```
 
-> Note: This command launches a web browser allowing for the authorization of a full access key to be copied locally.
+# Copy Link untuk Autorisasi ke Browser kalian
 
-1 – Copy the link in your browser
+![img](./images/LinkuntukAutorisasi.png)
 
+# Create wallet
 
-![img](./images/1.png)
+![img](./images/membuatwallet.png)
 
-2 – Grant Access to Near CLI
+# Masukkan nama wallet (Foto hanya contoh)
 
-![img](./images/3.png)
+![img](./images/Idwallet.PNG)
 
-3 – After Grant, you will see a page like this, go back to console
+# Simpan Phrase dan Verify Phrase
 
-![img](./images/4.png)
+![img](./images/simpanpharse.png)
 
-4 – Enter your wallet and press Enter
+# Kemudian masukkan Phrase yang sudah disimpan tadi
 
-![img](./images/5.png)
+# Klik Next dan Beri akses ke `NEAR-CLI` dengan klik `connect`
 
+![img](./images/connect2.png)
 
-#####  Check the validator_key.json
-* Run the following command:
+# Lalu masukkan `Account ID` kalian dan klik confirm (contoh : stakewar.shardnet.near). `stakewar` bisa diganti dengan nama wallet kalian.
+
+![img](./images/masukanid.png)
+
+# Setelah Memberi Akses, Kalian akan melihat gambar berikut.
+
+![img](./images/erorconfirm.PNG)
+
+jika sudah muncul gambar tersebut lanjut next step.
+
+# Kembali ke VPS dan masukkan `Account ID` yang sudah kalian buat tadi lalu enter
+
+![img](./images/masukan wallet id.PNG)
+
+# Generate Key untuk `validator_key.json`
+
+Ganti nama dengan nama wallet kalian (Contoh : stakewar).
+
+```
+near generate-key nama.factory.shardnet.near
+```
+
+## Lalu pindahkan file `validator_key.json` ke folder `.near`
+
+Ganti nama dengan nama wallet kalian seperti cara sebelumnya.
+
+```
+cp ~/.near-credentials/shardnet/nama.factory.shardnet.near.json ~/.near/validator_key.json
+```
+
+## Kemudian ganti kata `private_key` ke `secret_key` dibagian `validator_key.json` file
+
+```
+nano ~/.near/validator_key.json
+```
+
+Setelah di ubah, kemudian tekan `CTRL + X + Y` enter
+
+## Simpan `node_key.json` dan `validator_key.json`
+
+- Copy isi dari file `node_key.json` dan simpan kedalam notepad
+
+```
+cat ~/.near/node_key.json
+```
+
+- Copy isi dari file `validator_key.json` dan simpan kedalam notepad
+
 ```
 cat ~/.near/validator_key.json
 ```
 
+#### Menjadi Validator
 
-> Note: If a validator_key.json is not present, follow these steps to create one
+Untuk menjadi validator dan masuk ke dalam set validator aktif, minimal harus memenuhi kriteria keberhasilan.
 
-Create a `validator_key.json` 
+- Node harus sudah dalam full sinkron.
+- `validator_key.json` harus ditempatkan yang benar.
+- Kontrak validator harus sama dengan `public_key` di `validator_key.json`
+- `account_id` harus disetel ke contract id staking pool
+- Harus ada delegasi yang cukup untuk memenuhi jumlah seat minimum. Lihat jumlah seat [disini](https://explorer.shardnet.near.org/nodes/validators).
+- Proposal harus sudah diajukan dengan melakukan ping ke contract validator kalian.
+- Setelah Proposal disetujui (accepted) validators harus menunggu 2-3 epoch untuk menjadi validator aktif.
+- Setelah menjadi validator, validator harus menghasilkan lebih dari 90% block yang ditugaskan.
 
-*   Generate the Key file:
+Cek running status dari validator node. Jika `Validator` sudah muncul, maka pool sudah terpilih didalam validators list saat ini.
 
-```
-near generate-key <pool_id>
-```
-<pool_id> ---> xx.factory.shardnet.near WHERE xx is you pool name
+## Lanjut ke Challenge 003
 
-* Copy the file generated to shardnet folder:
-Make sure to replace <pool_id> by your accountId
-```
-cp ~/.near-credentials/shardnet/YOUR_WALLET.json ~/.near/validator_key.json
-```
-* Edit “account_id” => xx.factory.shardnet.near, where xx is your PoolName
-* Change `private_key` to `secret_key`
-
-> Note: The account_id must match the staking pool contract name or you will not be able to sign blocks.\
-
-File content must be in the following pattern:
-```
-{
-  "account_id": "xx.factory.shardnet.near",
-  "public_key": "ed25519:HeaBJ3xLgvZacQWmEctTeUqyfSU4SDEnEwckWxd92W2G",
-  "secret_key": "ed25519:****"
-}
-```
-
-#####  Start the validator node
-
-```
-target/release/neard run
-```
-* Setup Systemd
-Command:
-```
-sudo tee /etc/systemd/system/neard.service > /dev/null <<EOF 
-[Unit] 
-Description=NEARd Daemon Service 
-[Service] 
-Type=simple 
-User=$USER
-#Group=near 
-WorkingDirectory=$HOME/.near
-ExecStart=$HOME/nearcore/target/release/neard run 
-Restart=on-failure 
-RestartSec=30 
-KillSignal=SIGINT 
-TimeoutStopSec=45 
-KillMode=mixed 
-[Install] 
-WantedBy=multi-user.target 
-EOF
-```
-
-> Note: Change USER to your paths
-
-Command:
-
-```
-sudo systemctl enable neard
-```
-Command:
-
-```
-sudo systemctl start neard
-```
-If you need to make a change to service because of an error in the file. It has to be reloaded:
-
-```
-sudo systemctl reload neard
-```
-###### Watch logs
-Command:
-
-```
-journalctl -n 100 -f -u neard
-```
-Make log output in pretty print
-
-Command:
-
-```
-sudo apt install ccze
-```
-View Logs with color
-
-Command:
-
-```
-journalctl -n 100 -f -u neard | ccze -A
-```
-## Becoming a Validator
-In order to become a validator and enter the validator set, a minimum set of success criteria must be met.
-
-* The node must be fully synced
-* The `validator_key.json` must be in place
-* The contract must be initialized with the public_key in `validator_key.json`
-* The account_id must be set to the staking pool contract id
-* There must be enough delegations to meet the minimum seat price. See the seat price [here](https://explorer.shardnet.near.org/nodes/validators).
-* A proposal must be submitted by pinging the contract
-* Once a proposal is accepted a validator must wait 2-3 epoch to enter the validator set
-* Once in the validator set the validator must produce great than 90% of assigned blocks
-
-Check running status of validator node. If “Validator” is showing up, your pool is selected in the current validators list.
-
-
-## [challenge 3](./003.md).
+[Mounting Staking Pool](./challenge3.md)
