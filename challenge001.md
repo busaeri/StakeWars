@@ -35,13 +35,13 @@ https://wallet.shardnet.near.org/
 ```
 sudo apt update && sudo apt upgrade -y
 ```
-##### Install developer tools, Node.js, and npm
+## Install developer tools, Node.js, and npm
 ```
 curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -  
 sudo apt install build-essential nodejs
 PATH="$PATH"
 ```
-Check `Node.js` and `npm` version:
+## Check `Node.js` and `npm` version:
 ```
 node -v
 ```
@@ -51,7 +51,7 @@ node -v
 npm -v
 ```
 > 8.x.x
-##### Install NEAR-CLI
+## Install NEAR-CLI
 ```
 sudo npm install -g near-cli
 ```
