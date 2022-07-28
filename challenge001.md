@@ -4,7 +4,7 @@ Create your Shardnet wallet & deploy the NEAR CLI.
 
 ## Useful links
 
-Create Wallet:
+Wallet:
 >- [Wallet](https://wallet.shardnet.near.org/)
 
 Explorer:
@@ -16,6 +16,22 @@ Official documentation:
 join the official Discord:
 >- https://discord.gg/XVsBbZGqUt
 
-Also check out the upcoming new challenges:
->- [ new challenges](https://github.com/near/stakewars-iii/blob/main/challenges/challenge-summary.md)
+### Minimum Hardware Requirements
+ - 4x CPUs; the faster clock speed the better
+ - 8GB RAM
+ - 500GB Disk
+ - Permanent Internet connection (traffic will be minimal during testnet; 10Mbps will be plenty - for production at least 100Mbps is expected)
 
+
+### Create Wallet
+https://wallet.shardnet.near.org/
+
+#### Setup NEAR-CLI
+
+* Setup and Installation NEAR CLI
+* View Validator Stats
+
+## Update packages
+```
+sudo apt update && sudo apt upgrade -y
+```
