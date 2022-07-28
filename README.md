@@ -1,5 +1,4 @@
-# Stakewars
-Stake Wars: Episode 3 challenges 
+# Stake Wars: Episode 3 challenges 
 
 follow the installation steps:
 >- [instalation](https://github.com/busaeri/StakeWars/blob/main/challenge001.md)
