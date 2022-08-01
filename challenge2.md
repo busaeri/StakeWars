@@ -92,7 +92,7 @@ git fetch
 ## Checkout Commit
 
 ```
-git checkout 0d7f272afabc00f4a076b1c89a70ffc62466efe9
+git checkout c1b047b8187accbf6bd16539feb7bb60185bdc38
 ```
 
 ![img](./images/CheckoutCommit.PNG)
